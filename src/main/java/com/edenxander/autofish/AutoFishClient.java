@@ -15,58 +15,43 @@ import org.lwjgl.glfw.GLFW;
 
 public class AutoFishClient implements ClientModInitializer {
 
-    private static KeyBinding toggleAutoFishKey;
-    private static KeyBinding unlockMouseKey;
+    private static KeyBinding toggleKey;
 
-    private static boolean autoFishEnabled = false;
-    private static boolean mouseUnlocked = false;
+    private static boolean enabled = false; // both autofish + mouse unlock share this flag
 
     private static int recastCooldown = 0;
     private static int biteCooldown = 0;
 
     @Override
     public void onInitializeClient() {
-        toggleAutoFishKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.autofish-mouseunlock.toggle",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_O,
                 "category.autofish-mouseunlock"
         ));
 
-        unlockMouseKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.autofish-mouseunlock.unlockmouse",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_U,
-                "category.autofish-mouseunlock"
-        ));
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.world == null) return;
 
-            // Toggle AutoFish
-            while (toggleAutoFishKey.wasPressed()) {
-                autoFishEnabled = !autoFishEnabled;
-                client.player.sendMessage(Text.literal("AutoFish: " + (autoFishEnabled ? "§aON" : "§cOFF")), true);
-            }
-
-            // Toggle Mouse Unlock
-            while (unlockMouseKey.wasPressed()) {
-                mouseUnlocked = !mouseUnlocked;
-                if (mouseUnlocked) {
+            // Single key toggles BOTH AutoFish and Mouse Unlock together
+            while (toggleKey.wasPressed()) {
+                enabled = !enabled;
+                if (enabled) {
                     client.mouse.unlockCursor();
-                    client.player.sendMessage(Text.literal("Mouse: §aUNLOCKED"), true);
+                    client.player.sendMessage(Text.literal("AutoFish + Mouse Unlock: §aON"), true);
                 } else {
                     client.mouse.lockCursor();
-                    client.player.sendMessage(Text.literal("Mouse: §cLOCKED"), true);
+                    client.player.sendMessage(Text.literal("AutoFish + Mouse Unlock: §cOFF"), true);
                 }
             }
 
-            // Keep mouse unlocked if flag is set (re-apply every tick so game doesn't re-grab)
-            if (mouseUnlocked && client.currentScreen == null) {
+            // Keep mouse unlocked while enabled (re-apply every tick so game can't re-grab)
+            if (enabled && client.currentScreen == null) {
                 client.mouse.unlockCursor();
             }
 
-            if (!autoFishEnabled) return;
+            if (!enabled) return;
 
             if (recastCooldown > 0) {
                 recastCooldown--;
@@ -86,28 +71,22 @@ public class AutoFishClient implements ClientModInitializer {
             if (bobber == null) {
                 // No bobber → cast (same as player_press_use)
                 useRod(client);
-                recastCooldown = 10; // small delay after cast
+                recastCooldown = 10;
                 return;
             }
 
-            // Bite detection – mirrors the "!!!" check
-            // Primary: bobber has caught a fish (vanilla field)
-            // Fallback: sudden downward velocity (classic autofish method)
+            // Bite detection – mirrors the "!!!" check via velocity spike
             boolean bite = false;
             try {
-                // Access the private caughtFish via the public isInOpenWater / or velocity
-                // In 1.21 the field is still present; many mods check velocity for reliability
-                if (bobber.getVelocity().y < -0.04 && bobber.isOnGround() == false && bobber.getY() < client.player.getY()) {
-                    // sudden pull down = bite
+                if (bobber.getVelocity().y < -0.04 && !bobber.isOnGround() && bobber.getY() < client.player.getY()) {
                     bite = true;
                 }
             } catch (Exception ignored) {}
 
-            // Extra safety: if the bobber has been out long enough and velocity spikes
             if (bite && biteCooldown <= 0) {
                 useRod(client); // reel in
                 biteCooldown = 15;
-                recastCooldown = 20; // wait before recast (matches the 0.3s sleep)
+                recastCooldown = 20; // matches original 0.3s delay
             }
         });
     }
