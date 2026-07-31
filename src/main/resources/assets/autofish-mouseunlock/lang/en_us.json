@@ -1,5 +1,4 @@
 {
-  "key.autofish-mouseunlock.toggle": "Toggle AutoFish",
-  "key.autofish-mouseunlock.unlockmouse": "Unlock Mouse Cursor",
+  "key.autofish-mouseunlock.toggle": "Toggle AutoFish + Mouse Unlock",
   "category.autofish-mouseunlock": "AutoFish Mouse Unlock"
 }
