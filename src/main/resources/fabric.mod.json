@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "autofish-mouseunlock",
+  "version": "${version}",
+  "name": "AutoFish Mouse Unlock",
+  "description": "Autofishing that mirrors the Minescript bite-wait-reel loop + free mouse cursor unlock.",
+  "authors": ["EDEN-XANDER for USER"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/autofish-mouseunlock/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.edenxander.autofish.AutoFishClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
