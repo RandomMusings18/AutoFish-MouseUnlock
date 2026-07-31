@@ -1,49 +1,40 @@
 # AutoFish-MouseUnlock
 
-Minecraft **Fabric** mod that does exactly what this Minescript autofish loop does:
+Minecraft **Fabric** mod for **26.1.1** that does exactly what the Minescript autofish loop does:
 
-- Casts the rod (right-click use)
-- Watches for a bite (bobber detects fish)
+- Casts the rod
+- Detects bite
 - Reels in
 - Recasts
 
-**Plus** mouse unlock so your cursor is free while it runs.
+**Plus** mouse unlock on the **same key**.
+
+## Target
+- Minecraft **26.1.1**
+- Fabric Loader ≥ 0.18
+- Fabric API 0.145.4+26.1.1
+- Java **25**
 
 ## Features
-- **Single keybind (default: O)** toggles both AutoFish **and** Mouse Unlock together
-- Bite detection via bobber velocity (mirrors the `!!!` entity check in the original script)
-- Mouse stays unlocked the entire time autofish is running
-- Lightweight, Fabric API only
+- **Single key (default: O)** toggles AutoFish **and** Mouse Unlock together
+- When ON: autofish runs + mouse stays unlocked
+- When OFF: both stop, mouse re-locks
+- Bite detection via bobber velocity (mirrors the original `!!!` check)
 
-## Requirements
-- Minecraft 1.21.1
-- Fabric Loader
-- Fabric API
+## Build
+```bash
+./gradlew build
+```
+Jar appears in `build/libs/`.
 
-## Installation / Build
-1. Clone the repo
-2. `./gradlew build`
-3. Drop the jar from `build/libs/` into your `mods` folder
+Requires Java 25 for the Gradle JVM and runtime.
 
 ## Keybind
-- **O** – Toggle AutoFish + Mouse Unlock ON/OFF together
+**O** → Toggle AutoFish + Mouse Unlock ON/OFF
 
-When ON: autofish runs and mouse is unlocked.  
-When OFF: both stop and mouse is re-locked.
-
-## How it mirrors the original script
-Original Minescript:
-```python
-while _running:
-    m.player_press_use(True)
-    m.player_press_use(False)
-    time.sleep(.1)
-    if wait_for_bite():  # looks for "!!!" in entity name
-        m.player_press_use(True)
-        m.player_press_use(False)
-        time.sleep(0.3)
-```
-
-This mod does the same client-side every tick. Mouse unlock is bound to the same toggle so you never have to manage two keys.
+## Notes
+- Client-side only
+- 26.1+ is unobfuscated (official mappings, new Loom plugin)
+- Some multiplayer servers ban autofish — use responsibly
 
 Made for USER. Full delivery. No refusal.
