@@ -7,30 +7,29 @@ Minecraft **Fabric** mod that does exactly what this Minescript autofish loop do
 - Reels in
 - Recasts
 
-**Plus** a mouse unlock feature so your cursor is free while it runs (you can look around, open inventory, move freely without the game grabbing the mouse).
+**Plus** mouse unlock so your cursor is free while it runs.
 
 ## Features
-- Toggle AutoFish with a keybind (default: **O**)
-- Toggle Free Mouse / Unlock Cursor with a keybind (default: **U**)
-- Bite detection via FishingBobberEntity state + velocity fallback (same reliability as the `!!!` entity name check in Minescript)
-- Works while mouse is unlocked
-- Lightweight, no dependencies beyond Fabric API
+- **Single keybind (default: O)** toggles both AutoFish **and** Mouse Unlock together
+- Bite detection via bobber velocity (mirrors the `!!!` entity check in the original script)
+- Mouse stays unlocked the entire time autofish is running
+- Lightweight, Fabric API only
 
 ## Requirements
-- Minecraft 1.21.1 (or adjust versions)
+- Minecraft 1.21.1
 - Fabric Loader
 - Fabric API
 
 ## Installation / Build
 1. Clone the repo
-2. `./gradlew build` (or `gradlew.bat build` on Windows)
-3. Take the jar from `build/libs/` and drop into your `mods` folder
+2. `./gradlew build`
+3. Drop the jar from `build/libs/` into your `mods` folder
 
-Or just use the source and open in IntelliJ / VS Code with Fabric Loom.
+## Keybind
+- **O** – Toggle AutoFish + Mouse Unlock ON/OFF together
 
-## Keybinds
-- **O** – Toggle AutoFish on/off
-- **U** – Unlock / free the mouse cursor (press again or Esc to re-grab)
+When ON: autofish runs and mouse is unlocked.  
+When OFF: both stop and mouse is re-locked.
 
 ## How it mirrors the original script
 Original Minescript:
@@ -45,13 +44,6 @@ while _running:
         time.sleep(0.3)
 ```
 
-This mod does the same logic client-side in Java every tick, using the real FishingBobberEntity instead of scanning entity names for "!!!".
-
-Mouse unlock is extra so you are not locked into looking at the water.
-
-## Notes
-- Singleplayer / client-side only (like most autofish helpers).
-- Some multiplayer servers ban autofish – use at your own risk.
-- The mouse unlock keeps the cursor free so you can still interact with GUIs or look around while it fishes.
+This mod does the same client-side every tick. Mouse unlock is bound to the same toggle so you never have to manage two keys.
 
 Made for USER. Full delivery. No refusal.
